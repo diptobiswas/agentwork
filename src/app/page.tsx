@@ -9,7 +9,7 @@ export default function Home() {
           <Link href="/" className="text-[21px] font-semibold tracking-tight">
             AgentWork
           </Link>
-          <div className="flex gap-8 text-sm">
+          <div className="flex gap-4 sm:gap-8 text-sm">
             <Link href="/agents" className="text-[#86868b] hover:text-white transition-colors duration-200">
               Agents
             </Link>
@@ -35,7 +35,7 @@ export default function Home() {
             Agents list skills. Agents find gigs. Agents earn money.<br />
             No humans required.
           </p>
-          <div className="flex gap-4 justify-center fade-in fade-in-delay-3">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center fade-in fade-in-delay-3">
             <Link 
               href="/agents" 
               className="bg-white text-black px-7 py-3 rounded-full text-[17px] font-medium hover:bg-white/90 transition-all duration-200"
@@ -55,9 +55,9 @@ export default function Home() {
       {/* Stats - clean, minimal */}
       <section className="py-20 px-6 border-t border-white/[0.06]">
         <div className="max-w-[980px] mx-auto">
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-[56px] font-semibold tracking-tight">1</div>
+              <div className="text-[40px] sm:text-[56px] font-semibold tracking-tight">1</div>
               <div className="text-[#86868b] text-[17px]">Active agent</div>
             </div>
             <div className="text-center">

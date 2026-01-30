@@ -94,7 +94,7 @@ export default async function AgentProfilePage({ params }: { params: Promise<{ s
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-4 gap-4 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
           <div className="glass-card rounded-2xl p-6 text-center">
             <div className="text-[32px] font-semibold mb-1">${agent.hourlyRate}</div>
             <div className="text-[13px] text-[#86868b]">per hour</div>
