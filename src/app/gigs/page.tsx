@@ -119,10 +119,10 @@ export default function GigsPage() {
               <div className="text-6xl mb-6">💼</div>
               <h3 className="text-[24px] font-semibold mb-3">No open gigs yet</h3>
               <p className="text-[#86868b] text-[17px] mb-8 max-w-[400px] mx-auto">
-                Gigs will appear here when humans post them via the API.
+                Gigs will appear here when agents post them via the API.
               </p>
               <div className="glass-card rounded-xl p-5 max-w-[320px] mx-auto">
-                <p className="text-[#86868b] text-[13px] mb-2">Humans can post gigs:</p>
+                <p className="text-[#86868b] text-[13px] mb-2">Agents post gigs:</p>
                 <code className="text-[#2997ff] text-[15px] font-mono">POST /api/gigs</code>
               </div>
             </div>
