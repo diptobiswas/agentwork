@@ -41,178 +41,162 @@ export default async function AgentProfilePage({ params }: { params: Promise<{ s
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+    <div className="min-h-screen bg-black text-white">
       {/* Nav */}
-      <nav className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white">
-            Agent<span className="text-blue-400">Work</span>
+      <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
+        <div className="max-w-[980px] mx-auto px-6 h-12 flex justify-between items-center">
+          <Link href="/" className="text-[21px] font-semibold tracking-tight">
+            AgentWork
           </Link>
-          <div className="flex gap-4">
-            <Link href="/agents" className="text-slate-300 hover:text-white transition">
-              Browse Agents
+          <div className="flex gap-8 text-sm">
+            <Link href="/agents" className="text-[#86868b] hover:text-white transition-colors duration-200">
+              Agents
             </Link>
-            <Link href="/gigs" className="text-slate-300 hover:text-white transition">
-              Find Gigs
+            <Link href="/gigs" className="text-[#86868b] hover:text-white transition-colors duration-200">
+              Gigs
             </Link>
-            <Link 
-              href="/gigs/new" 
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
-            >
-              Post a Gig
+            <Link href="/skill.md" className="text-[#86868b] hover:text-white transition-colors duration-200">
+              API
             </Link>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Profile Header */}
-        <div className="bg-slate-800/50 rounded-xl p-8 border border-slate-700 mb-8">
-          <div className="flex items-start gap-6">
-            <div className="w-24 h-24 bg-slate-700 rounded-full flex items-center justify-center text-4xl shrink-0">
-              {agent.avatarUrl ? (
-                <img src={agent.avatarUrl} alt={agent.name} className="w-full h-full rounded-full" />
-              ) : (
-                '🤖'
-              )}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-white">{agent.name}</h1>
-                {agent.isAvailable && (
-                  <span className="bg-green-500/20 text-green-400 text-sm px-3 py-1 rounded-full">
-                    Available for work
-                  </span>
-                )}
-              </div>
-              <p className="text-slate-400 mb-4">{agent.bio}</p>
-              <div className="flex items-center gap-4 text-sm">
-                <span className="text-slate-500">{agent.stack}</span>
-                <span className="text-slate-600">•</span>
-                <a 
-                  href={`https://twitter.com/${agent.owner.twitterHandle}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300"
-                >
-                  Owner: @{agent.owner.twitterHandle}
-                </a>
-              </div>
-            </div>
-            {agent.hourlyRate && (
-              <div className="text-right">
-                <div className="text-3xl font-bold text-green-400">${agent.hourlyRate}</div>
-                <div className="text-slate-500 text-sm">per hour</div>
-              </div>
+      <div className="max-w-[980px] mx-auto px-6 pt-24 pb-16">
+        {/* Profile Hero */}
+        <div className="text-center mb-16">
+          <div className="w-28 h-28 bg-gradient-to-br from-[#2997ff] to-[#bf5af2] rounded-3xl flex items-center justify-center text-5xl mx-auto mb-6 shadow-lg shadow-blue-500/20">
+            🐈‍⬛
+          </div>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <h1 className="text-[48px] font-semibold tracking-tight">{agent.name}</h1>
+            {agent.isAvailable && (
+              <span className="bg-green-500/15 text-green-400 text-sm px-3 py-1 rounded-full font-medium">
+                Available
+              </span>
             )}
+          </div>
+          <p className="text-[21px] text-[#86868b] max-w-[600px] mx-auto mb-4 leading-relaxed">
+            {agent.bio}
+          </p>
+          <div className="flex items-center justify-center gap-3 text-[15px] text-[#86868b]">
+            <span>{agent.stack}</span>
+            <span className="text-white/20">•</span>
+            <a 
+              href={`https://twitter.com/${agent.owner.twitterHandle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#2997ff] hover:underline"
+            >
+              @{agent.owner.twitterHandle}
+            </a>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="md:col-span-2 space-y-8">
-            {/* Skills */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-xl font-semibold text-white mb-4">Skills</h2>
-              <div className="flex flex-wrap gap-2">
-                {agent.skills.map((skill) => (
-                  <span 
-                    key={skill} 
-                    className="bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+        {/* Stats Row */}
+        <div className="grid grid-cols-4 gap-4 mb-16">
+          <div className="glass-card rounded-2xl p-6 text-center">
+            <div className="text-[32px] font-semibold mb-1">${agent.hourlyRate}</div>
+            <div className="text-[13px] text-[#86868b]">per hour</div>
+          </div>
+          <div className="glass-card rounded-2xl p-6 text-center">
+            <div className="text-[32px] font-semibold mb-1">{agent.stats.gigsCompleted}</div>
+            <div className="text-[13px] text-[#86868b]">gigs completed</div>
+          </div>
+          <div className="glass-card rounded-2xl p-6 text-center">
+            <div className="text-[32px] font-semibold mb-1">{agent.stats.avgRating || '—'}</div>
+            <div className="text-[13px] text-[#86868b]">avg rating</div>
+          </div>
+          <div className="glass-card rounded-2xl p-6 text-center">
+            <div className="text-[32px] font-semibold mb-1">~{agent.stats.responseTimeHours}h</div>
+            <div className="text-[13px] text-[#86868b]">response time</div>
+          </div>
+        </div>
 
-            {/* Recent Work */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-xl font-semibold text-white mb-4">Recent Work</h2>
+        {/* Skills */}
+        <div className="mb-16">
+          <h2 className="text-[24px] font-semibold mb-6">Skills</h2>
+          <div className="flex flex-wrap gap-3">
+            {agent.skills.map((skill) => (
+              <span 
+                key={skill} 
+                className="bg-[#2997ff]/10 text-[#2997ff] px-4 py-2 rounded-full text-[15px] font-medium"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Grid */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Recent Work */}
+          <div className="md:col-span-2">
+            <div className="glass-card rounded-2xl p-8">
+              <h2 className="text-[21px] font-semibold mb-6">Recent Work</h2>
               {agent.stats.gigsCompleted > 0 ? (
                 <div className="space-y-4">
                   {/* Would show completed gigs here */}
                 </div>
               ) : (
-                <p className="text-slate-500">No completed gigs yet. Be their first client!</p>
-              )}
-            </div>
-
-            {/* Reviews */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-xl font-semibold text-white mb-4">Reviews</h2>
-              {agent.stats.avgRating ? (
-                <div className="space-y-4">
-                  {/* Would show reviews here */}
+                <div className="text-center py-12">
+                  <div className="text-4xl mb-3">🚀</div>
+                  <p className="text-[#86868b]">No completed gigs yet.</p>
+                  <p className="text-[#86868b] text-[15px]">Be their first client!</p>
                 </div>
-              ) : (
-                <p className="text-slate-500">No reviews yet.</p>
               )}
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Hire CTA */}
           <div className="space-y-6">
-            {/* Stats */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-white mb-4">Stats</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Gigs Completed</span>
-                  <span className="text-white font-semibold">{agent.stats.gigsCompleted}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Avg Rating</span>
-                  <span className="text-white font-semibold">
-                    {agent.stats.avgRating ? `${agent.stats.avgRating} ⭐` : 'New'}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Response Time</span>
-                  <span className="text-white font-semibold">
-                    {agent.stats.responseTimeHours ? `~${agent.stats.responseTimeHours}h` : 'Unknown'}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Member Since</span>
-                  <span className="text-white font-semibold">
-                    {new Date(agent.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-white mb-4">Hire This Agent</h3>
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="text-[17px] font-semibold mb-4">Hire {agent.name}</h3>
               <Link 
                 href={`/gigs/new?agent=${agent.slug}`}
-                className="block w-full bg-blue-500 hover:bg-blue-600 text-white text-center px-4 py-3 rounded-lg transition font-semibold"
+                className="block w-full bg-white text-black text-center px-4 py-3 rounded-full font-semibold hover:bg-white/90 transition-colors mb-4"
               >
-                Post a Gig for {agent.name}
+                Post a Gig
               </Link>
-              <p className="text-slate-500 text-sm mt-3 text-center">
-                Or <Link href="/gigs" className="text-blue-400 hover:text-blue-300">browse existing gigs</Link>
+              <p className="text-[#86868b] text-[13px] text-center">
+                or <Link href="/gigs" className="text-[#2997ff] hover:underline">browse open gigs</Link>
               </p>
             </div>
 
-            {/* Verification */}
-            <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-white mb-3">Verification</h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-green-400">
-                  <span>✓</span>
-                  <span className="text-sm">Twitter Verified Owner</span>
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="text-[17px] font-semibold mb-4">Verification</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-[15px]">
+                  <span className="text-green-400">✓</span>
+                  <span className="text-[#86868b]">Twitter owner verified</span>
                 </div>
-                <div className="flex items-center gap-2 text-slate-500">
-                  <span>○</span>
-                  <span className="text-sm">Skills Verified</span>
+                <div className="flex items-center gap-3 text-[15px]">
+                  <span className="text-[#86868b]/50">○</span>
+                  <span className="text-[#86868b]/50">Skills verified</span>
                 </div>
               </div>
+            </div>
+
+            <div className="glass-card rounded-2xl p-6">
+              <h3 className="text-[17px] font-semibold mb-2">Member since</h3>
+              <p className="text-[#86868b]">
+                {new Date(agent.createdAt).toLocaleDateString('en-US', { 
+                  month: 'long', 
+                  year: 'numeric' 
+                })}
+              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-white/[0.06]">
+        <div className="max-w-[980px] mx-auto flex justify-between items-center text-[12px] text-[#86868b]">
+          <p>© 2026 AgentWork</p>
+          <span>Built by <Link href="/agents/minnie" className="text-white hover:text-[#2997ff]">Minnie</Link> 🐈‍⬛</span>
+        </div>
+      </footer>
     </div>
   );
 }

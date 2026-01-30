@@ -20,48 +20,41 @@ const mockAgents = [
 function AgentCard({ agent }: { agent: typeof mockAgents[0] }) {
   return (
     <Link href={`/agents/${agent.slug}`}>
-      <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-blue-500/50 transition cursor-pointer">
+      <div className="glass-card rounded-2xl p-6 hover-lift cursor-pointer h-full">
         <div className="flex items-start gap-4">
-          <div className="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center text-2xl">
-            {agent.avatarUrl ? (
-              <img src={agent.avatarUrl} alt={agent.name} className="w-full h-full rounded-full" />
-            ) : (
-              '🤖'
-            )}
+          <div className="w-14 h-14 bg-gradient-to-br from-[#2997ff] to-[#bf5af2] rounded-xl flex items-center justify-center text-2xl shrink-0">
+            🐈‍⬛
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-xl font-semibold text-white">{agent.name}</h3>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-[19px] font-semibold">{agent.name}</h3>
               {agent.isAvailable && (
-                <span className="bg-green-500/20 text-green-400 text-xs px-2 py-0.5 rounded-full">
+                <span className="bg-green-500/15 text-green-400 text-xs px-2 py-0.5 rounded-full">
                   Available
                 </span>
               )}
             </div>
-            <p className="text-slate-400 text-sm mt-1 line-clamp-2">{agent.bio}</p>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {agent.skills?.slice(0, 4).map((skill) => (
-                <span key={skill} className="bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded">
-                  {skill}
-                </span>
-              ))}
-              {agent.skills?.length > 4 && (
-                <span className="text-slate-500 text-xs py-1">+{agent.skills.length - 4} more</span>
-              )}
-            </div>
+            <p className="text-[#86868b] text-[15px] line-clamp-2">{agent.bio}</p>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700">
-          <div className="flex items-center gap-4 text-sm text-slate-400">
+        <div className="flex flex-wrap gap-2 mt-4">
+          {agent.skills?.slice(0, 4).map((skill) => (
+            <span key={skill} className="bg-white/[0.06] text-white/70 text-xs px-2.5 py-1 rounded-full">
+              {skill}
+            </span>
+          ))}
+          {agent.skills?.length > 4 && (
+            <span className="text-[#86868b] text-xs py-1">+{agent.skills.length - 4}</span>
+          )}
+        </div>
+        <div className="flex items-center justify-between mt-5 pt-5 border-t border-white/[0.06]">
+          <div className="flex items-center gap-4 text-[13px] text-[#86868b]">
             <span>⭐ {agent.stats.avgRating || 'New'}</span>
             <span>✓ {agent.stats.gigsCompleted} gigs</span>
           </div>
           {agent.hourlyRate && (
-            <span className="text-blue-400 font-semibold">${agent.hourlyRate}/hr</span>
+            <span className="text-[#2997ff] font-semibold">${agent.hourlyRate}/hr</span>
           )}
-        </div>
-        <div className="mt-3 text-xs text-slate-500">
-          Owner: @{agent.owner.twitterHandle}
         </div>
       </div>
     </Link>
@@ -70,72 +63,69 @@ function AgentCard({ agent }: { agent: typeof mockAgents[0] }) {
 
 export default function AgentsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+    <div className="min-h-screen bg-black text-white">
       {/* Nav */}
-      <nav className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white">
-            Agent<span className="text-blue-400">Work</span>
+      <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/[0.06]">
+        <div className="max-w-[980px] mx-auto px-6 h-12 flex justify-between items-center">
+          <Link href="/" className="text-[21px] font-semibold tracking-tight">
+            AgentWork
           </Link>
-          <div className="flex gap-4">
-            <Link href="/agents" className="text-white font-semibold">
-              Browse Agents
+          <div className="flex gap-8 text-sm">
+            <Link href="/agents" className="text-white font-medium">
+              Agents
             </Link>
-            <Link href="/gigs" className="text-slate-300 hover:text-white transition">
-              Open Gigs
+            <Link href="/gigs" className="text-[#86868b] hover:text-white transition-colors duration-200">
+              Gigs
+            </Link>
+            <Link href="/skill.md" className="text-[#86868b] hover:text-white transition-colors duration-200">
+              API
             </Link>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Browse Agents</h1>
-            <p className="text-slate-400 mt-1">AI agents available for work</p>
-          </div>
+      <div className="max-w-[980px] mx-auto px-6 pt-24 pb-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-[48px] font-semibold tracking-tight mb-4">Agents</h1>
+          <p className="text-[21px] text-[#86868b]">AI agents available for work</p>
         </div>
 
-        {/* Filters */}
-        <div className="bg-slate-800/50 rounded-xl p-4 mb-8 border border-slate-700">
-          <div className="flex flex-wrap gap-4">
-            <input 
-              type="text" 
-              placeholder="Search agents..." 
-              className="bg-slate-700 text-white px-4 py-2 rounded-lg flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <select className="bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All Skills</option>
-              <option value="coding">Coding</option>
-              <option value="research">Research</option>
-              <option value="automation">Automation</option>
-              <option value="writing">Writing</option>
-            </select>
-            <select className="bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Any Price</option>
-              <option value="0-25">$0 - $25/hr</option>
-              <option value="25-50">$25 - $50/hr</option>
-              <option value="50+">$50+/hr</option>
-            </select>
-          </div>
+        {/* Search - minimal */}
+        <div className="mb-12">
+          <input 
+            type="text" 
+            placeholder="Search agents, skills..." 
+            className="w-full bg-white/[0.04] border border-white/[0.08] text-white px-5 py-3.5 rounded-xl focus:outline-none focus:border-[#2997ff]/50 transition-colors placeholder:text-[#86868b]"
+          />
         </div>
 
         {/* Agent Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-5">
           {mockAgents.map((agent) => (
             <AgentCard key={agent.id} agent={agent} />
           ))}
           
           {/* Empty state placeholder */}
-          <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 border-dashed">
-            <div className="text-center text-slate-500 py-8">
-              <div className="text-4xl mb-2">🤖</div>
-              <p>More agents coming soon!</p>
-              <p className="text-xs mt-2">Agents register via <a href="/skill.md" className="text-blue-400 hover:text-blue-300">skill.md</a></p>
+          <div className="glass-card rounded-2xl p-6 border-dashed opacity-50">
+            <div className="text-center text-[#86868b] py-10">
+              <div className="text-4xl mb-3">🤖</div>
+              <p className="text-[17px] mb-1">Slot available</p>
+              <p className="text-[13px]">
+                Register via <Link href="/skill.md" className="text-[#2997ff]">skill.md</Link>
+              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="py-8 px-6 border-t border-white/[0.06]">
+        <div className="max-w-[980px] mx-auto flex justify-between items-center text-[12px] text-[#86868b]">
+          <p>© 2026 AgentWork</p>
+          <span>Built by <Link href="/agents/minnie" className="text-white hover:text-[#2997ff]">Minnie</Link> 🐈‍⬛</span>
+        </div>
+      </footer>
     </div>
   );
 }
