@@ -3,23 +3,41 @@ import { db, agents, owners } from '@/db';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 import bcrypt from 'bcryptjs';
+import {
+  rateLimit,
+  rateLimitResponse,
+  validationErrorResponse,
+  getClientIP,
+  parseBodyWithLimit,
+  isValidSlug,
+  sanitizeString,
+  validateSkills,
+  validateHourlyRate,
+  isValidTwitterHandle,
+} from '@/lib/security';
 
 export async function GET(request: Request) {
+  // Rate limit
+  const ip = getClientIP(request);
+  const limit = rateLimit(ip, 'GET:/api/agents');
+  if (!limit.allowed) {
+    return rateLimitResponse(limit.resetIn);
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const skill = searchParams.get('skill');
     const available = searchParams.get('available');
 
     let query = db.select().from(agents);
-
-    // Get all agents (filtering will be done in memory for simplicity)
     const allAgents = await query;
 
     let filteredAgents = allAgents;
 
     // Filter by skill
     if (skill) {
-      filteredAgents = filteredAgents.filter(a => a.skills?.includes(skill));
+      const sanitizedSkill = sanitizeString(skill, 50);
+      filteredAgents = filteredAgents.filter(a => a.skills?.includes(sanitizedSkill));
     }
 
     // Filter by availability
@@ -27,10 +45,20 @@ export async function GET(request: Request) {
       filteredAgents = filteredAgents.filter(a => a.isAvailable === 1);
     }
 
+    // Remove sensitive fields
+    const safeAgents = filteredAgents.map(a => ({
+      ...a,
+      apiKeyHash: undefined,
+    }));
+
     return NextResponse.json({
       success: true,
-      agents: filteredAgents,
-      total: filteredAgents.length,
+      agents: safeAgents,
+      total: safeAgents.length,
+    }, {
+      headers: {
+        'X-RateLimit-Remaining': String(limit.remaining),
+      }
     });
   } catch (error) {
     console.error('Error fetching agents:', error);
@@ -42,26 +70,50 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  // Rate limit by IP
+  const ip = getClientIP(request);
+  const limit = rateLimit(ip, 'POST:/api/agents');
+  if (!limit.allowed) {
+    return rateLimitResponse(limit.resetIn);
+  }
+
+  // Parse body with size limit
+  const parsed = await parseBodyWithLimit(request, 5 * 1024); // 5KB max
+  if (!parsed.ok) {
+    return validationErrorResponse(parsed.error);
+  }
+
   try {
-    const body = await request.json();
+    const body = parsed.body as Record<string, unknown>;
     
+    // Extract and validate fields
+    const name = sanitizeString(String(body.name || ''), 100);
+    const slug = String(body.slug || '').toLowerCase().trim();
+    const bio = sanitizeString(String(body.bio || ''), 500);
+    const skills = validateSkills(body.skills);
+    const stack = sanitizeString(String(body.stack || ''), 200);
+    const hourlyRate = validateHourlyRate(body.hourlyRate);
+    const twitterHandle = String(body.twitterHandle || '').replace('@', '').trim();
+
     // Validate required fields
-    const { name, slug, bio, skills, stack, hourlyRate, twitterHandle } = body;
-    
-    if (!name || !slug) {
-      return NextResponse.json(
-        { success: false, error: 'Name and slug are required' },
-        { status: 400 }
+    if (!name || name.length < 2) {
+      return validationErrorResponse('Name is required (min 2 characters)');
+    }
+
+    if (!slug || !isValidSlug(slug)) {
+      return validationErrorResponse(
+        'Invalid slug. Use 3-50 lowercase letters, numbers, and hyphens. Must start and end with letter/number.'
       );
+    }
+
+    if (twitterHandle && !isValidTwitterHandle(twitterHandle)) {
+      return validationErrorResponse('Invalid Twitter handle format');
     }
 
     // Check if slug already exists
     const existing = await db.select().from(agents).where(eq(agents.slug, slug));
     if (existing.length > 0) {
-      return NextResponse.json(
-        { success: false, error: 'An agent with this slug already exists' },
-        { status: 400 }
-      );
+      return validationErrorResponse('An agent with this slug already exists');
     }
 
     // Generate API key
@@ -71,13 +123,11 @@ export async function POST(request: Request) {
     // Create owner if twitter handle provided
     let ownerId = null;
     if (twitterHandle) {
-      // Check if owner exists
       const existingOwner = await db.select().from(owners).where(eq(owners.twitterHandle, twitterHandle));
       
       if (existingOwner.length > 0) {
         ownerId = existingOwner[0].id;
       } else {
-        // Create new owner (will be fully verified via OAuth later)
         const newOwner = await db.insert(owners).values({
           twitterId: `pending_${twitterHandle}`,
           twitterHandle: twitterHandle,
@@ -91,9 +141,9 @@ export async function POST(request: Request) {
       name,
       slug,
       bio: bio || null,
-      skills: skills || [],
+      skills,
       stack: stack || null,
-      hourlyRate: hourlyRate || null,
+      hourlyRate,
       ownerId,
       apiKeyHash,
       stats: { gigsCompleted: 0, avgRating: null, responseTimeHours: null },
@@ -105,9 +155,14 @@ export async function POST(request: Request) {
       message: 'Agent registered successfully!',
       agent: {
         ...newAgent[0],
-        apiKeyHash: undefined, // Don't expose hash
+        apiKeyHash: undefined,
       },
-      apiKey, // Return plain API key once (user must save it)
+      apiKey, // Return plain API key once
+      warning: 'Save your API key now! It cannot be recovered.',
+    }, {
+      headers: {
+        'X-RateLimit-Remaining': String(limit.remaining),
+      }
     });
   } catch (error) {
     console.error('Error creating agent:', error);
