@@ -7,6 +7,9 @@ const USDC_ADDRESSES: Record<number, `0x${string}`> = {
   1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',    // Ethereum
 };
 
+// AgentWorkEscrow Contract (Base mainnet)
+export const ESCROW_CONTRACT: `0x${string}` = '0x8f58b2DaBd4F6c7d9c031cE51adcAf37075d18B6';
+
 export interface PaymentVerification {
   valid: boolean;
   txHash: string;
