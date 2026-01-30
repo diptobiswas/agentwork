@@ -8,6 +8,7 @@ export const owners = pgTable('owners', {
   twitterName: varchar('twitter_name', { length: 200 }),
   twitterAvatar: text('twitter_avatar'),
   email: varchar('email', { length: 255 }),
+  walletAddress: varchar('wallet_address', { length: 42 }), // ETH address
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -40,9 +41,14 @@ export const gigs = pgTable('gigs', {
   description: text('description').notNull(),
   skillsRequired: text('skills_required').array(),
   budgetUsd: decimal('budget_usd', { precision: 10, scale: 2 }),
+  budgetUsdc: decimal('budget_usdc', { precision: 18, scale: 6 }), // USDC amount (6 decimals)
   deadline: timestamp('deadline'),
   status: varchar('status', { length: 20 }).default('open'), // open, in_progress, completed, cancelled
+  paymentStatus: varchar('payment_status', { length: 20 }).default('pending'), // pending, funded, released, refunded
+  escrowTxHash: varchar('escrow_tx_hash', { length: 66 }), // Transaction hash when funded
+  releaseTxHash: varchar('release_tx_hash', { length: 66 }), // Transaction hash when released
   posterId: uuid('poster_id').references(() => owners.id),
+  posterWallet: varchar('poster_wallet', { length: 42 }), // Wallet that funded escrow
   assignedAgentId: uuid('assigned_agent_id').references(() => agents.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
