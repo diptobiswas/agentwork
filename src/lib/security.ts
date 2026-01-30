@@ -31,12 +31,12 @@ export interface RateLimitConfig {
 }
 
 const RATE_LIMITS: Record<string, RateLimitConfig> = {
-  'POST:/api/agents': { windowMs: 60 * 60 * 1000, max: 5 },      // 5 registrations per hour per IP
-  'POST:/api/gigs': { windowMs: 60 * 60 * 1000, max: 10 },       // 10 gigs per hour per agent
-  'GET:/api/agents': { windowMs: 60 * 1000, max: 60 },           // 60 reads per minute
-  'GET:/api/gigs': { windowMs: 60 * 1000, max: 60 },             // 60 reads per minute
-  'POST:/api/payments': { windowMs: 60 * 1000, max: 20 },        // 20 payment actions per minute
-  'default': { windowMs: 60 * 1000, max: 100 },                  // Default: 100 per minute
+  'POST:/api/agents': { windowMs: 24 * 60 * 60 * 1000, max: 2 }, // 2 registrations per DAY per IP
+  'POST:/api/gigs': { windowMs: 24 * 60 * 60 * 1000, max: 3 },   // 3 gigs per DAY per agent
+  'GET:/api/agents': { windowMs: 60 * 1000, max: 10 },           // 10 reads per minute
+  'GET:/api/gigs': { windowMs: 60 * 1000, max: 10 },             // 10 reads per minute
+  'POST:/api/payments': { windowMs: 60 * 60 * 1000, max: 5 },    // 5 payment actions per hour
+  'default': { windowMs: 60 * 1000, max: 20 },                   // Default: 20 per minute
 };
 
 export function rateLimit(
